@@ -1,0 +1,128 @@
+Task 2 – Choose the Data Representation 
+
+1. Selection of Java Data Types
+
+The following Java data types are suitable for the Campus Smart-Parking System:
+
+Floor number: `int` – stores the floor number.
+Slot number: `int` – identifies each parking slot.
+Vehicle registration number: `String` – stores letters and digits.
+Vehicle type: `String` or `enum` – represents two-wheelers, cars, and electric vehicles.
+Entry time: `LocalDateTime` – stores the date and time of entry.
+Exit time: `LocalDateTime` – stores the date and time of exit.
+Parking duration: `long` – stores the duration in minutes.
+Parking fee: `BigDecimal` – represents monetary values accurately.
+Slot availability: `boolean` – indicates whether a slot is free or occupied.
+Ticket number: `long` – stores a unique ticket number.
+
+BigDecimal` is preferred for monetary calculations because floating-point types may introduce rounding errors.
+
+2. Representation of Floors and Slots
+
+A two-dimensional array can represent a parking facility with equal numbers of slots on every floor.
+
+
+String[][] slots = new String[3][50];
+This represents 3 floors with 50 slots per floor. A `null` value indicates an empty slot.
+
+Example:
+slots[0][0] = "TN01AB1234";
+If floors have different numbers of slots, a jagged array is more suitable.
+
+String[][] slots = new String[3][];
+
+slots[0] = new String[20];
+slots[1] = new String[50];
+slots[2] = new String[30];
+
+This represents three floors with 20, 50, and 30 slots respectively.
+
+3. Type Conversion and Casting
+Type conversion is required when calculating parking duration and fees.
+
+Incorrect example – integer division
+
+int duration = 90;
+int hours = duration / 60;
+double fee = hours * 40;
+System.out.println(fee);
+
+Output:
+40.0
+The output is incorrect because integer division makes `90 / 60` equal to `1`. The extra 30 minutes are discarded.
+
+Correct example – floating-point division
+
+int duration = 90;
+double hours = duration / 60.0;
+double fee = hours * 40;
+System.out.println(fee);
+
+Output:
+60.0
+
+Dividing by `60.0` preserves the fractional hour.
+
+Calculation: (90 / 60.0) × 40 = ₹60.
+
+This example assumes proportional hourly billing. If the system charges for every started hour, a ceiling calculation must be used instead.
+
+For accurate monetary calculations, `BigDecimal` or integer values in paise should be preferred over `double`.
+
+4. Reading Input
+The `Scanner` class can read user input from the keyboard.
+
+import java.util.Scanner;
+public class ParkingInput {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter registration number: ");
+        String regNo = sc.nextLine();
+
+        System.out.print("Enter floor number: ");
+        int floor = sc.nextInt();
+
+        System.out.print("Enter duration in minutes: ");
+        long duration = sc.nextLong();
+
+        System.out.println("Registration Number: " + regNo);
+        System.out.println("Floor Number: " + floor);
+        System.out.println("Duration: " + duration + " minutes");
+
+        sc.close();
+    }
+}
+
+`Scanner` is beginner-friendly and suitable for interactive input.
+
+5. Alternative Concept and Complexity Analysis
+
+One-dimensional array
+All parking slots can be stored in one array when the total number of slots is known.
+
+String[] slots = new String[150];
+
+If every floor contains 50 slots, the index can be calculated as:
+
+
+int index = floor * slotsPerFloor + slot;
+This formula assumes zero-based indexing and equal floor capacities.
+
+If floors have different capacities, the index must include the total number of slots on all previous floors.
+
+ArrayList
+An `ArrayList<String>` can store slots and grow dynamically.
+
+import java.util.ArrayList;
+ArrayList<String> slots = new ArrayList<>();
+However, a mapping between floors and slots must be maintained.
+
+Comparison
+
+Two-dimensional array: Provides direct access using floor and slot indices. Space complexity is O(F × S) for equal floor capacities.
+Jagged array: Supports different numbers of slots per floor and uses O(N) space for N total slots.
+One-dimensional array: Provides O(1) access by a correctly calculated index and uses O(N) space.
+ArrayList: Provides O(1) indexed access and O(N) space. It is useful when the collection needs to grow dynamically.
+
+Locating a slot by index takes O(1) time in these representations. Searching all slots to find a free slot takes O(N) time.
